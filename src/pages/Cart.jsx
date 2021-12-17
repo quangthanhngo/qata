@@ -4,6 +4,14 @@ import Announcement from "./../components/Announcement";
 import Footer from "./../components/Footer";
 import { Add, Remove } from "@material-ui/icons";
 import { mobile } from "./../responsive";
+import { useSelector } from "react-redux";
+import StripeCheckout from "react-stripe-checkout";
+import { useState, useEffect } from "react";
+import { userRequest } from "../requestMethods";
+import { useHistory } from "react-router";
+import { Link } from "react-router-dom";
+
+const KEY = process.env.REACT_APP_STRIPE;
 
 const Container = styled.div``;
 
@@ -83,6 +91,7 @@ const ProductId = styled.span``;
 const ProductColor = styled.div`
   width: 20px;
   height: 20px;
+  border: 2px solid #333;
   border-radius: 50%;
   background-color: ${(props) => props.color};
 `;
@@ -161,6 +170,30 @@ const Button = styled.button`
 `;
 
 const Cart = () => {
+  const cart = useSelector((state) => state.cart);
+  const [stripeToken, setStripeToken] = useState(null);
+  const history = useHistory();
+
+  const onToken = (token) => {
+    setStripeToken(token);
+  };
+
+  useEffect(() => {
+    const makeRequest = async () => {
+      try {
+        const res = await userRequest.post("/checkout/payment", {
+          tokenId: stripeToken.id,
+          amount: 500,
+        });
+        history.push("/success", {
+          stripeData: res.data,
+          products: cart,
+        });
+      } catch {}
+    };
+    stripeToken && makeRequest();
+  }, [stripeToken, cart.total, history]);
+
   return (
     <Container>
       <Announcement />
@@ -168,7 +201,9 @@ const Cart = () => {
       <Wrapper>
         <Title>YOUR CART</Title>
         <Top>
-          <TopButton>CONTINUE SHOPPING</TopButton>
+          <Link to="/" style={{ textDecoration: "none" }}>
+            <TopButton>CONTINUE SHOPPING</TopButton>
+          </Link>
 
           <TopTexts>
             <TopText>Shoping Cart(2)</TopText>
@@ -180,85 +215,67 @@ const Cart = () => {
 
         <Bottom>
           <Info>
-            <Product>
-              <ProductDetail>
-                <Image src="https://hips.hearstapps.com/vader-prod.s3.amazonaws.com/1614188818-TD1MTHU_SHOE_ANGLE_GLOBAL_MENS_TREE_DASHERS_THUNDER_b01b1013-cd8d-48e7-bed9-52db26515dc4.png?crop=1xw:1.00xh;center,top&resize=480%3A%2A" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b>BITIS HUNTER ONE
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b>95435435
-                  </ProductId>
-                  <ProductColor color="black" />
-                  <ProductSize>
-                    <b>Size:</b>XL
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <Add />
-                  <ProductAmount>2</ProductAmount>
-                  <Remove />
-                </ProductAmountContainer>
-                <ProductPrice>$850</ProductPrice>
-              </PriceDetail>
-            </Product>
-
+            {cart.products.map((product) => (
+              <Product>
+                <ProductDetail>
+                  <Image src={product.img} />
+                  <Details>
+                    <ProductName>
+                      <b>Product:</b> {product.title}
+                    </ProductName>
+                    <ProductId>
+                      <b>ID:</b> {product._id}
+                    </ProductId>
+                    <ProductColor color={product.color} />
+                    <ProductSize>
+                      <b>Size:</b> {product.size}
+                    </ProductSize>
+                  </Details>
+                </ProductDetail>
+                <PriceDetail>
+                  <ProductAmountContainer>
+                    <Add />
+                    <ProductAmount>{product.quantity}</ProductAmount>
+                    <Remove />
+                  </ProductAmountContainer>
+                  <ProductPrice>
+                    $ {product.price * product.quantity}
+                  </ProductPrice>
+                </PriceDetail>
+              </Product>
+            ))}
             <Hr />
-
-            <Product>
-              <ProductDetail>
-                <Image src="https://cdn.picpng.com/running_shoes/running-shoes-transparent-36325.png" />
-                <Details>
-                  <ProductName>
-                    <b>Product:</b>BITIS VENOM TWO
-                  </ProductName>
-                  <ProductId>
-                    <b>ID:</b>81135433
-                  </ProductId>
-                  <ProductColor color="blue" />
-                  <ProductSize>
-                    <b>Size:</b>L
-                  </ProductSize>
-                </Details>
-              </ProductDetail>
-
-              <PriceDetail>
-                <ProductAmountContainer>
-                  <Add />
-                  <ProductAmount>3</ProductAmount>
-                  <Remove />
-                </ProductAmountContainer>
-                <ProductPrice>$650</ProductPrice>
-              </PriceDetail>
-            </Product>
           </Info>
           <Summary>
             <SummaryTitle>ORDER SUMMARY</SummaryTitle>
             <SummaryItem>
-              <SummaryItemText>Subtotal:</SummaryItemText>
-              <SummaryItemPrice>$850</SummaryItemPrice>
+              <SummaryItemText>Subtotal</SummaryItemText>
+              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
-
             <SummaryItem>
-              <SummaryItemText>Estimated Shipping:</SummaryItemText>
-              <SummaryItemPrice>$65</SummaryItemPrice>
+              <SummaryItemText>Estimated Shipping</SummaryItemText>
+              <SummaryItemPrice>$ 5.90</SummaryItemPrice>
             </SummaryItem>
-
             <SummaryItem>
-              <SummaryItemText>Shipping Discount:</SummaryItemText>
-              <SummaryItemPrice>-$65</SummaryItemPrice>
+              <SummaryItemText>Shipping Discount</SummaryItemText>
+              <SummaryItemPrice>$ -5.90</SummaryItemPrice>
             </SummaryItem>
-
             <SummaryItem type="total">
-              <SummaryItemText>Total:</SummaryItemText>
-              <SummaryItemPrice>$1500</SummaryItemPrice>
+              <SummaryItemText>Total</SummaryItemText>
+              <SummaryItemPrice>$ {cart.total}</SummaryItemPrice>
             </SummaryItem>
-
-            <Button>CHECKOUT NOW</Button>
+            <StripeCheckout
+              name="QATA Shop"
+              image="https://cdn-icons-png.flaticon.com/512/2421/2421700.png"
+              billingAddress
+              shippingAddress
+              description={`Your total is $${cart.total}`}
+              amount={cart.total * 100}
+              token={onToken}
+              stripeKey={KEY}
+            >
+              <Button>CHECKOUT NOW</Button>
+            </StripeCheckout>
           </Summary>
         </Bottom>
       </Wrapper>

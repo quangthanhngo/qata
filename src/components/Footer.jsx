@@ -14,24 +14,17 @@ const Left = styled.div`
   flex: 1;
   display: flex;
   flex-direction: column;
-  padding: 20px 0px;
+  padding: 20px;
 `;
 
-const Logo = styled.h1`
-  font-weight: 800;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
+const Logo = styled.h1``;
 
 const Desc = styled.p`
-  margin: 20px;
+  margin: 20px 0px;
 `;
 
 const SocialContainer = styled.div`
   display: flex;
-  align-content: center;
-  justify-content: center;
 `;
 
 const SocialIcon = styled.div`
@@ -43,7 +36,7 @@ const SocialIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin: 12px;
+  margin: 20px;
 `;
 
 const Center = styled.div`
@@ -54,9 +47,6 @@ const Center = styled.div`
 
 const Title = styled.h3`
   margin-bottom: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
 `;
 
 const List = styled.ul`
@@ -69,9 +59,7 @@ const List = styled.ul`
 
 const ListItem = styled.li`
   width: 50%;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
+  margin-bottom: 10px;
 `;
 
 const Right = styled.div`
@@ -87,7 +75,7 @@ const ContactItem = styled.div`
 `;
 
 const Payment = styled.img`
-  width: 50%;
+  width: 20%;
 `;
 
 function Footer() {
@@ -151,7 +139,7 @@ function Footer() {
         <ContactItem>
           <Email style={{ marginRight: "10px" }} /> customerservices@qata.com
         </ContactItem>
-        <Payment src="https://i1.wp.com/mup.manipal.edu/wp-content/uploads/2019/12/payment-method-png-2463x512_e315f6c1.png" />
+        <Payment src="https://pngimg.com/uploads/paypal/paypal_PNG15.png" />
       </Right>
     </Container>
   );

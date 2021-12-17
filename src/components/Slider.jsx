@@ -3,6 +3,7 @@ import { useState } from "react";
 import styled from "styled-components";
 import { sliderItems } from "../data";
 import { mobile } from "../responsive";
+import { Link } from "react-router-dom";
 
 const Container = styled.div`
   width: 100%;
@@ -61,19 +62,25 @@ const InfoContainer = styled.div`
 
 const Title = styled.h1`
   font-size: 70px;
-  letter-spacing: 2px;
 `;
 const Desc = styled.p`
   margin: 50px 0px;
   font-size: 20px;
   font-weight: 500;
-  letter-spacing: 2px;
+  letter-spacing: 3px;
 `;
 const Button = styled.button`
   padding: 10px;
   font-size: 20px;
   background-color: transparent;
   cursor: pointer;
+  transition: all 0.5s ease;
+
+  &:hover {
+    color: white;
+    background-color: teal;
+    transform: scale(1.1);
+  }
 `;
 
 const Slider = () => {
@@ -102,7 +109,9 @@ const Slider = () => {
             <InfoContainer>
               <Title>{item.title}</Title>
               <Desc>{item.desc}</Desc>
-              <Button>SHOP NOW</Button>
+              <Link to="/products/jeans">
+                <Button>SHOP NOW</Button>
+              </Link>
             </InfoContainer>
           </Slide>
         ))}
@@ -116,5 +125,3 @@ const Slider = () => {
 };
 
 export default Slider;
-
-// stop at 45:00

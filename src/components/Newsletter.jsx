@@ -41,7 +41,7 @@ const Button = styled.button`
   color: white;
 `;
 
-function Newsletter() {
+const Newsletter = () => {
   return (
     <Container>
       <Title>Newsletter</Title>
@@ -54,7 +54,7 @@ function Newsletter() {
       </InputContainer>
     </Container>
   );
-}
+};
 
 export default Newsletter;
 
