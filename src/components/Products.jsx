@@ -17,16 +17,32 @@ const Products = ({ cat, filters, sort }) => {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
   useEffect(() => {
+    // LOCALHOST
+    //
+    // const getProducts = async () => {
+    //   try {
+    //     const res = await axios.get(
+    //       cat
+    //         ? `http://localhost:5000/api/products?category=${cat}`
+    //         : "http://localhost:5000/api/products"
+    //     );
+    //     setProducts(res.data);
+    //   } catch (err) {}
+    // };
+
+    // DEPLOY
+    //
     const getProducts = async () => {
       try {
         const res = await axios.get(
           cat
-            ? `http://localhost:5000/api/products?category=${cat}`
-            : "http://localhost:5000/api/products"
+            ? `https://qata.herokuapp.com/api/products?category=${cat}`
+            : "https://qata.herokuapp.com/api/products"
         );
         setProducts(res.data);
       } catch (err) {}
     };
+
     getProducts();
   }, [cat]);
 
